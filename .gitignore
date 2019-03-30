@@ -1,2 +1,8 @@
-lambda/layers/dist/
+lambda/layers
+lambda/functions
+lambda/out.yml
+
+openfaas/template
+openfaas/build
+
 *.zip

@@ -1,0 +1,117 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: perl faas functions
+
+Resources:
+  ##############
+  ### LAYERS ###
+  ##############
+  PerlRuntimeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: perl_5_28
+      Description: Perl 5.28 runtime
+      # ContentUri: layers/tmp
+      ContentUri: layers/lambda-layer-perl-5.28.zip
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  PerlPawsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: perl_5_28_paws
+      Description: Perl 5.28 Paws lib
+      # ContentUri: layers/tmp-paws
+      ContentUri: layers/lambda-layer-perl-5.28-paws.zip
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  #################
+  ### FUNCTIONS ###
+  #################
+  HelloWorld:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/hello-world/hello-world.zip
+      Handler: hello-world.handler
+      Runtime: provided
+      Layers:
+        - !Ref PerlRuntimeLayer
+      Policies:
+        - AWSLambdaExecute # AWS Managed
+
+  SimpleYaml:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/simple-yaml/simple-yaml.zip
+      Handler: handler.handle
+      Runtime: provided
+      Layers:
+        - !Ref PerlRuntimeLayer
+      Policies:
+        - AWSLambdaExecute # AWS Managed
+    
+  PythonSystemPerl:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/python-system-perl/python-system-perl.zip
+      Handler: handler.handler
+      Runtime: python3.6
+      Layers:
+        - !Ref PerlRuntimeLayer
+      Policies:
+        - AWSLambdaExecute # AWS Managed
+
+  Plack:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/plack/plack.zip
+      Handler: handler.handle
+      Runtime: provided
+      Layers:
+        - !Ref PerlRuntimeLayer
+      Policies:
+        - AWSLambdaExecute # AWS Managed
+    
+  S3Upload:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/s3-upload/s3-upload.zip
+      Handler: handler.handle
+      Runtime: provided
+      Timeout: 30
+      Layers:
+        - !Ref PerlRuntimeLayer
+        - !Ref PerlPawsLayer
+      Policies:
+        - AWSLambdaExecute # AWS Managed
+        - Version: '2012-10-17' # Policy to process uploaded files
+          Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:GetObjectACL
+            Resource: arn:aws:s3:::*
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: arn:aws:s3:::*
+      Events:
+        FileUploadEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref UploadBucket
+            Events: s3:ObjectCreated:*
+            Filter: 
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: landing/
+
+  ###############
+  ### BUCKETS ###
+  ###############
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-uploads
