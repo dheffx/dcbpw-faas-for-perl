@@ -45,7 +45,7 @@ Paws is installed because
 
 The base layer image is also used for running Carton to vendor the additional libraries defined in cpanfile for each function.
 
-See the project [README.md](layers/README.md) for more.
+See the project [README.md](https://github.com/dheffx/aws-lambda-perl5-layer/blob/master/README.md) for more.
 
 ### Build the sample functions
 
@@ -93,6 +93,8 @@ To get around this, unzip the layers to a temporary directory, and update `templ
 ContentUri: layers/tmp
 ```
 
+Without doing this, `sam local` will show an error of `Error: Couldn't find valid bootstrap(s)`
+
 #### Example invocations
 
 Direct Invoke
@@ -128,8 +130,8 @@ aws cloudformation deploy \
 
 ```
 perl test/generate-files.pl outdir
-aws sync outdir/ s3://your-upload-bucket/landing
-aws ls s3://your-upload-bucket/processed
+aws s3 sync outdir/ s3://$UPLOAD_BUCKET/landing
+aws s3 ls s3://$UPLOAD_BUCKET/processed
 ```
 
 ## Reference

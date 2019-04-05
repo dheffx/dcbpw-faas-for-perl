@@ -7,6 +7,9 @@ use Date::Calc::Endpoints;
 =pod
 
 =h1 handle
+
+Date::Calc::Endpoints as http function
+
 =cut
 
 sub handle {
