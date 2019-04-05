@@ -4,37 +4,37 @@ provider:
 functions:
   date-endpoints:
     lang: perl-mojo
-    handler: ./functions/date-endpoints
-    image: dheffx/date-endpoints:0.0.1
+    handler: ./date-endpoints
+    image: dheffx/date-endpoints:0.0.4
     environment:
       combine_output: false
 
   dump-env:
     lang: perl
-    handler: ./functions/dump-env
+    handler: ./dump-env
     image: dheffx/dump-env:0.0.1
 
   hello:
     lang: perl
-    handler: ./functions/hello
+    handler: ./hello
     image: dheffx/hello:0.0.1
 
   hello-mojo:
     lang: perl-mojo
-    handler: ./functions/hello-mojo
-    image: dheffx/hello-mojo:0.0.1
+    handler: ./hello-mojo
+    image: dheffx/hello-mojo:0.0.4
     environment:
       log_level: error
       MOJO_MODE: production
 
   perlcritic:
     lang: perl
-    handler: ./functions/perlcritic
+    handler: ./perlcritic
     image: dheffx/perlcritic:0.0.1
   
   simple-get:
     lang: perl
-    handler: ./functions/simple-get
+    handler: ./simple-get
     image: dheffx/simple-get:0.0.1
     build_options:
-      - ssl
+      - ssl  

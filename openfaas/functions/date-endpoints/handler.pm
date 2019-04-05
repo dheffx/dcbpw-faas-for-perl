@@ -7,29 +7,23 @@ use Date::Calc::Endpoints;
 =pod
 
 =h1 handle
-    handle a request to the function
-    Args:
-      request (Mojo::Message::Request)
-      context (function::context)
 =cut
 
 sub handle {
-  my ($request, $context) = @_;
+  my ($c) = @_;
 
-  my $endpoints = Date::Calc::Endpoints->new(%{$request->query_params->to_hash});
+  my $endpoints = Date::Calc::Endpoints->new(%{$c->req->query_params->to_hash});
   my ($start_date, $end_date, $last_date) = $endpoints->get_dates();
 
   if (scalar @{$endpoints->get_error()}) {
-    $context->status(400)
-      ->succeed($endpoints->get_error());
+    $c->render(json => $endpoints->get_error(), status => 400);
   } else {
     my $result = {
       start_date => $start_date,
       end_date => $end_date,
       last_date => $last_date
     };
-    $context->status(200)
-      ->succeed($result);
+    $c->render(json => $result, status => 200);
   }
 }
 

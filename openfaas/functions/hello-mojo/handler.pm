@@ -3,14 +3,8 @@ use strict;
 use warnings;
 
 sub handle {
-  my ($request, $context) = @_;
-
-  my $result = {
-    message => "Hello Mojo"
-  };
-
-  $context->status(200)
-          ->succeed($result);
+  my ($c) = @_;
+  $c->render(json => { message => "Hello Mojo" }, status => 200);
 }
 
 1;

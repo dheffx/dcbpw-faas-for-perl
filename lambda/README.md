@@ -2,7 +2,7 @@
 
 This example borrows from several existing online repositories, or tutorials. They will be referenced below.
 
-In particular, I've forked two repositories (and will likely push some of this work back) that will be used.
+In particular, I've forked two repositories and modified that will be used. In particular the bootstrap script has been refactored to include a context object, and use error apis.
 
 ## Dependencies
 
@@ -129,7 +129,6 @@ aws cloudformation deploy \
 ```
 perl test/generate-files.pl outdir
 aws sync outdir/ s3://your-upload-bucket/landing
-rm -rf outdir
 aws ls s3://your-upload-bucket/processed
 ```
 
